@@ -9,6 +9,21 @@ on:
   workflow_dispatch:
 
 jobs:
+  paths-filter:
+    runs-on: ubuntu-latest
+    outputs:
+      output1: ${{ steps.filter.outputs.workflows }}
+   steps:
+    - uses: actions/checkout@v3
+    - uses: dorny/paths-filter@v2
+      id: changes
+      with:
+        filters: |
+          alma-9:
+            - 'alma_9.Dockerfile'
+          alma-8:
+            - 'alma_9.Dockerfile'
+
   build-and-push:
     runs-on: ubuntu-latest
 
@@ -27,10 +42,20 @@ jobs:
           username: dfuchs
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-      - name: Build and push
+      - name: Build and push (alma-9)
         uses: docker/build-push-action@v4
+        if: ${{ (steps.changes.outputs.alma-9 == 'true') || (github.event_name == 'schedule') || (github.event_name == 'workflow_dispatch') }}
         with:
           context: .
           file: alma_9.Dockerfile
           push: true
           tags: dfuchs/alma-9-ansible:latest
+
+      - name: Build and push (alma-8)
+        uses: docker/build-push-action@v4
+        if: ${{ (steps.changes.outputs.alma-8 == 'true') || (github.event_name == 'schedule') || (github.event_name == 'workflow_dispatch') }}
+        with:
+          context: .
+          file: alma_8.Dockerfile
+          push: true
+          tags: dfuchs/alma-8-ansible:latest
