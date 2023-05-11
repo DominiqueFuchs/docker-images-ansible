@@ -10,6 +10,7 @@ on:
 
 jobs:
   paths-filter:
+    name: Determine changed file(s)
     runs-on: ubuntu-latest
     outputs:
       output1: ${{ steps.filter.outputs.workflows }}
@@ -25,8 +26,8 @@ jobs:
             - 'alma_9.Dockerfile'
 
   build-and-push:
+    name: Build and push
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
 
