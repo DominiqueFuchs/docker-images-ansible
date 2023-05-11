@@ -4,10 +4,9 @@ on:
   push:
     paths:
     - '**.Dockerfile'
-    tags:
-    - '*'
   schedule:
     - cron: "15 0 * * *"
+  workflow_dispatch:
 
 jobs:
   build-and-push:
