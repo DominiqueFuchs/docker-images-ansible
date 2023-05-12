@@ -24,6 +24,8 @@ jobs:
             - 'alma_9.Dockerfile'
           alma-8:
             - 'alma_9.Dockerfile'
+          debian-11:
+            - 'debian_11.Dockerfile'
 
   build-and-push:
     name: Build and push
