@@ -9,6 +9,8 @@ There is not much going on here - there is only added layers that contain an ans
   - [dfuchs/alma-9-ansible](https://hub.docker.com/r/dfuchs/alma-9-ansible)
 - Debian
   - [dfuchs/debian-11-ansible](https://hub.docker.com/r/dfuchs/debian-11-ansible)
+- Ubuntu
+  - [dfuchs/ubuntu-22.04-ansible](https://hub.docker.com/r/dfuchs/ubuntu-22.04-ansible)
 
 ## Included packages/installations
 
