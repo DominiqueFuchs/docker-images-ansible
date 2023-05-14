@@ -5,7 +5,7 @@ on:
     paths:
     - '**.Dockerfile'
   schedule:
-    - cron: "15 0 * * *"
+    - cron: "15 0 * * 6"
   workflow_dispatch:
 
 jobs:
