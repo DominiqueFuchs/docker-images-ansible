@@ -26,6 +26,8 @@ jobs:
             - 'alma_9.Dockerfile'
           debian-11:
             - 'debian_11.Dockerfile'
+          ubuntu-2204:
+            - 'ubuntu_2204.Dockerfile'
 
   build-and-push:
     name: Build and push
@@ -71,3 +73,12 @@ jobs:
           file: debian_11.Dockerfile
           push: true
           tags: dfuchs/debian-11-ansible:latest
+
+      - name: Build and push (debian-11)
+        uses: docker/build-push-action@v4
+        if: ${{ (steps.changes.outputs.ubuntu-2204 == 'true') || (github.event_name == 'schedule') || (github.event_name == 'workflow_dispatch') }}
+        with:
+          context: .
+          file: ubuntu_2204.Dockerfile
+          push: true
+          tags: dfuchs/ubuntu-22.04-ansible:latest
