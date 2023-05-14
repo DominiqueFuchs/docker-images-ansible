@@ -74,7 +74,7 @@ jobs:
           push: true
           tags: dfuchs/debian-11-ansible:latest
 
-      - name: Build and push (debian-11)
+      - name: Build and push (ubuntu-22.04)
         uses: docker/build-push-action@v4
         if: ${{ (steps.changes.outputs.ubuntu-2204 == 'true') || (github.event_name == 'schedule') || (github.event_name == 'workflow_dispatch') }}
         with:
