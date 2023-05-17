@@ -13,7 +13,10 @@ jobs:
     name: Determine changed file(s)
     runs-on: ubuntu-latest
     outputs:
-      output1: ${{ steps.filter.outputs.workflows }}
+      alma-9: ${{ steps.filter.outputs.alma-9 }}
+      alma-8: ${{ steps.filter.outputs.alma-8 }}
+      debian-11: ${{ steps.filter.outputs.debian-11 }}
+      ubuntu-2204: ${{ steps.filter.outputs.ubuntu-2204 }}
     steps:
     - uses: actions/checkout@v3
     - uses: dorny/paths-filter@v2
