@@ -11,7 +11,7 @@ RUN apt-get -y update && \
         "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
         tee /etc/apt/sources.list.d/docker.list > /dev/null && \
     apt-get -y update && \
-    apt-get -y install docker-ce docker-ce-cli docker-compose-plugin python3 python3-pip sudo && \
+    apt-get -y install acl docker-ce docker-ce-cli docker-compose-plugin python3 python3-pip sudo && \
     apt-get -y clean && \
     systemctl enable docker
 RUN pip3 install --upgrade pip && pip3 install wheel && pip3 install ansible
