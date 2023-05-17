@@ -11,6 +11,7 @@ on:
 jobs:
   paths-filter:
     name: Determine changed file(s)
+    if: ${{ (github.event_name != 'schedule') && (github.event_name != 'workflow_dispatch') }}
     runs-on: ubuntu-latest
     outputs:
       alma-9: ${{ steps.filter.outputs.alma-9 }}
