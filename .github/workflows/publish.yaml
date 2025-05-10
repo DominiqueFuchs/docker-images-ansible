@@ -7,33 +7,35 @@ on:
       - main
     paths:
       - '**.Dockerfile'
+      - 'README.md'
   workflow_dispatch:
+    inputs:
+      build:
+        description: 'Build and push image to Docker Hub'
+        required: false
+        default: 'none'
+        type: choice
+        options:
+          - all
+          - alma-9
+          - alma-8
+          - debian-11
+          - ubuntu-22.04
+          - none
+      image:
+        description: 'Docker Hub repo description update'
+        required: false
+        default: 'none'
+        type: choice
+        options:
+          - all
+          - alma-9
+          - alma-8
+          - debian-11
+          - ubuntu-22.04
+          - none
 
 jobs:
-  paths-filter:
-    name: Determine changed file(s)
-    if: ${{ github.event_name != 'workflow_dispatch' }}
-    runs-on: ubuntu-latest
-    outputs:
-      alma-9: ${{ steps.changes.outputs.alma-9 }}
-      alma-8: ${{ steps.changes.outputs.alma-8 }}
-      debian-11: ${{ steps.changes.outputs.debian-11 }}
-      ubuntu-2204: ${{ steps.changes.outputs.ubuntu-2204 }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dorny/paths-filter@v3
-        id: changes
-        with:
-          filters: |
-            alma-9:
-              - 'alma_9.Dockerfile'
-            alma-8:
-              - 'alma_9.Dockerfile'
-            debian-11:
-              - 'debian_11.Dockerfile'
-            ubuntu-2204:
-              - 'ubuntu_2204.Dockerfile'
-
   build-and-push:
     name: Build and push
     runs-on: ubuntu-latest
@@ -45,10 +47,10 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ (github.event_name == 'workflow_dispatch' || steps.changes.outputs.alma-9 == 'true') && 'dfuchs/alma-9-ansible' || '' }}
-            ${{ (github.event_name == 'workflow_dispatch' || steps.changes.outputs.alma-8 == 'true') && 'dfuchs/alma-8-ansible' || '' }}
-            ${{ (github.event_name == 'workflow_dispatch' || steps.changes.outputs.debian-11 == 'true') && 'dfuchs/debian-11-ansible' || '' }}
-            ${{ (github.event_name == 'workflow_dispatch' || steps.changes.outputs.ubuntu-2204 == 'true') && 'dfuchs/ubuntu-22.04-ansible' || '' }}
+            ${{ (github.event_name == 'workflow_dispatch' && (github.event.inputs.build == 'all' || github.event.inputs.build == 'alma-9')) || contains(github.event.head_commit.modified, 'alma_9.Dockerfile') && 'dfuchs/alma-9-ansible' || '' }}
+            ${{ (github.event_name == 'workflow_dispatch' && (github.event.inputs.build == 'all' || github.event.inputs.build == 'alma-8')) || contains(github.event.head_commit.modified, 'alma_8.Dockerfile') && 'dfuchs/alma-8-ansible' || '' }}
+            ${{ (github.event_name == 'workflow_dispatch' && (github.event.inputs.build == 'all' || github.event.inputs.build == 'debian-11')) || contains(github.event.head_commit.modified, 'debian_11.Dockerfile') && 'dfuchs/debian-11-ansible' || '' }}
+            ${{ (github.event_name == 'workflow_dispatch' && (github.event.inputs.build == 'all' || github.event.inputs.build == 'ubuntu-22.04')) || contains(github.event.head_commit.modified, 'ubuntu_2204.Dockerfile') && 'dfuchs/ubuntu-22.04-ansible' || '' }}
 
       - name: Login to Docker Hub repository
         uses: docker/login-action@v3
@@ -57,8 +59,8 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: Build and push (alma-9)
+        if: ${{ (github.event_name == 'workflow_dispatch' && (github.event.inputs.build == 'all' || github.event.inputs.build == 'alma-9')) || contains(github.event.head_commit.modified, 'alma_9.Dockerfile') }}
         uses: docker/build-push-action@v6
-        if: ${{ (steps.changes.outputs.alma-9 == 'true') || (github.event_name == 'workflow_dispatch') }}
         with:
           context: .
           file: alma_9.Dockerfile
@@ -66,8 +68,8 @@ jobs:
           tags: dfuchs/alma-9-ansible:latest
 
       - name: Build and push (alma-8)
+        if: ${{ (github.event_name == 'workflow_dispatch' && (github.event.inputs.build == 'all' || github.event.inputs.build == 'alma-8')) || contains(github.event.head_commit.modified, 'alma_8.Dockerfile') }}
         uses: docker/build-push-action@v6
-        if: ${{ (steps.changes.outputs.alma-8 == 'true') || (github.event_name == 'workflow_dispatch') }}
         with:
           context: .
           file: alma_8.Dockerfile
@@ -75,8 +77,8 @@ jobs:
           tags: dfuchs/alma-8-ansible:latest
 
       - name: Build and push (debian-11)
+        if: ${{ (github.event_name == 'workflow_dispatch' && (github.event.inputs.build == 'all' || github.event.inputs.build == 'debian-11')) || contains(github.event.head_commit.modified, 'debian_11.Dockerfile') }}
         uses: docker/build-push-action@v6
-        if: ${{ (steps.changes.outputs.debian-11 == 'true') || (github.event_name == 'workflow_dispatch') }}
         with:
           context: .
           file: debian_11.Dockerfile
@@ -84,10 +86,46 @@ jobs:
           tags: dfuchs/debian-11-ansible:latest
 
       - name: Build and push (ubuntu-22.04)
+        if: ${{ (github.event_name == 'workflow_dispatch' && (github.event.inputs.build == 'all' || github.event.inputs.build == 'ubuntu-22.04')) || contains(github.event.head_commit.modified, 'ubuntu_2204.Dockerfile') }}
         uses: docker/build-push-action@v6
-        if: ${{ (steps.changes.outputs.ubuntu-2204 == 'true') || (github.event_name == 'workflow_dispatch') }}
         with:
           context: .
           file: ubuntu_2204.Dockerfile
           push: true
           tags: dfuchs/ubuntu-22.04-ansible:latest
+
+  update-dockerhub-description:
+    name: Update Docker Hub Description
+    runs-on: ubuntu-latest
+    if: >-
+      ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && contains(github.event.head_commit.modified, 'README.md')) }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update Docker Hub description (alma-9)
+        if: ${{ github.event_name == 'push' || github.event.inputs.image == 'all' || github.event.inputs.image == 'alma-9' }}
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: dfuchs
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+          repository: dfuchs/alma-9-ansible
+      - name: Update Docker Hub description (alma-8)
+        if: ${{ github.event_name == 'push' || github.event.inputs.image == 'all' || github.event.inputs.image == 'alma-8' }}
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: dfuchs
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+          repository: dfuchs/alma-8-ansible
+      - name: Update Docker Hub description (debian-11)
+        if: ${{ github.event_name == 'push' || github.event.inputs.image == 'all' || github.event.inputs.image == 'debian-11' }}
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: dfuchs
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+          repository: dfuchs/debian-11-ansible
+      - name: Update Docker Hub description (ubuntu-22.04)
+        if: ${{ github.event_name == 'push' || github.event.inputs.image == 'all' || github.event.inputs.image == 'ubuntu-22.04' }}
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: dfuchs
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+          repository: dfuchs/ubuntu-22.04-ansible
