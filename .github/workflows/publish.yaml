@@ -20,7 +20,7 @@ jobs:
       debian-11: ${{ steps.filter.outputs.debian-11 }}
       ubuntu-2204: ${{ steps.filter.outputs.ubuntu-2204 }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v2
         id: changes
         with:
@@ -38,7 +38,7 @@ jobs:
     name: Build and push
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Docker meta
         id: meta
