@@ -21,7 +21,7 @@ jobs:
       ubuntu-2204: ${{ steps.filter.outputs.ubuntu-2204 }}
     steps:
       - uses: actions/checkout@v4
-      - uses: dorny/paths-filter@v2
+      - uses: dorny/paths-filter@v3
         id: changes
         with:
           filters: |
