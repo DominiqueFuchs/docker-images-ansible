@@ -1,4 +1,4 @@
-FROM jrei/systemd-debian:11
+FROM jrei/systemd-debian:12
 LABEL org.opencontainers.image.authors="Dominique Fuchs"
 
 RUN apt-get -y update && \
