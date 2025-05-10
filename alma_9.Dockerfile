@@ -1,4 +1,4 @@
-FROM almalinux/9-init:latest
+FROM almalinux/9-init:9.5
 LABEL org.opencontainers.image.authors="Dominique Fuchs"
 
 RUN dnf -y install 'dnf-command(config-manager)' && \
