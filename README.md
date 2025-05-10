@@ -14,6 +14,7 @@ The following base images are available, each equipped with Ansible and other te
     *   [`dfuchs/alma-8-ansible`](https://hub.docker.com/r/dfuchs/alma-8-ansible) (AlmaLinux 8)
     *   [`dfuchs/alma-9-ansible`](https://hub.docker.com/r/dfuchs/alma-9-ansible) (AlmaLinux 9)
 *   **Debian:**
+    *   [`dfuchs/debian-12-ansible`](https://hub.docker.com/r/dfuchs/debian-12-ansible) (Debian 12 Bookworm)
     *   [`dfuchs/debian-11-ansible`](https://hub.docker.com/r/dfuchs/debian-11-ansible) (Debian 11 Bullseye)
 *   **Ubuntu:**
     *   [`dfuchs/ubuntu-22.04-ansible`](https://hub.docker.com/r/dfuchs/ubuntu-2204-ansible) (Ubuntu 22.04 LTS Jammy Jellyfish)

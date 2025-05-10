@@ -19,6 +19,7 @@ on:
           - all
           - alma-9
           - alma-8
+          - debian-12
           - debian-11
           - ubuntu-22.04
           - none
@@ -31,6 +32,7 @@ on:
           - all
           - alma-9
           - alma-8
+          - debian-12
           - debian-11
           - ubuntu-22.04
           - none
@@ -42,6 +44,7 @@ jobs:
     outputs:
       alma_9: ${{ steps.changes.outputs.alma_9_any_changed }}
       alma_8: ${{ steps.changes.outputs.alma_8_any_changed }}
+      debian_12: ${{ steps.changes.outputs.debian_12_any_changed }}
       debian_11: ${{ steps.changes.outputs.debian_11_any_changed }}
       ubuntu_2204: ${{ steps.changes.outputs.ubuntu_2204_any_changed }}
       readme: ${{ steps.changes.outputs.readme_any_changed }}
@@ -58,6 +61,8 @@ jobs:
               - alma_9.Dockerfile
             alma_8:
               - alma_8.Dockerfile
+            debian_12:
+              - debian_12.Dockerfile
             debian_11:
               - debian_11.Dockerfile
             ubuntu_2204:
@@ -79,6 +84,7 @@ jobs:
           images: |
             ${{ (github.event_name == 'workflow_dispatch' && (github.event.inputs.build == 'all' || github.event.inputs.build == 'alma-9')) || (github.event_name == 'push' && needs.detect-changes.outputs.alma_9 == 'true') && 'dfuchs/alma-9-ansible' || '' }}
             ${{ (github.event_name == 'workflow_dispatch' && (github.event.inputs.build == 'all' || github.event.inputs.build == 'alma-8')) || (github.event_name == 'push' && needs.detect-changes.outputs.alma_8 == 'true') && 'dfuchs/alma-8-ansible' || '' }}
+            ${{ (github.event_name == 'workflow_dispatch' && (github.event.inputs.build == 'all' || github.event.inputs.build == 'debian-12')) || (github.event_name == 'push' && needs.detect-changes.outputs.debian_12 == 'true') && 'dfuchs/debian-12-ansible' || '' }}
             ${{ (github.event_name == 'workflow_dispatch' && (github.event.inputs.build == 'all' || github.event.inputs.build == 'debian-11')) || (github.event_name == 'push' && needs.detect-changes.outputs.debian_11 == 'true') && 'dfuchs/debian-11-ansible' || '' }}
             ${{ (github.event_name == 'workflow_dispatch' && (github.event.inputs.build == 'all' || github.event.inputs.build == 'ubuntu-22.04')) || (github.event_name == 'push' && needs.detect-changes.outputs.ubuntu_2204 == 'true') && 'dfuchs/ubuntu-22.04-ansible' || '' }}
 
@@ -105,6 +111,15 @@ jobs:
           file: alma_8.Dockerfile
           push: true
           tags: dfuchs/alma-8-ansible:latest
+
+      - name: Build and push (debian-12)
+        if: ${{ (github.event_name == 'workflow_dispatch' && (github.event.inputs.build == 'all' || github.event.inputs.build == 'debian-12')) || (github.event_name == 'push' && needs.detect-changes.outputs.debian_12 == 'true') }}
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: debian_12.Dockerfile
+          push: true
+          tags: dfuchs/debian-12-ansible:latest
 
       - name: Build and push (debian-11)
         if: ${{ (github.event_name == 'workflow_dispatch' && (github.event.inputs.build == 'all' || github.event.inputs.build == 'debian-11')) || (github.event_name == 'push' && needs.detect-changes.outputs.debian_11 == 'true') }}
@@ -147,6 +162,14 @@ jobs:
           username: dfuchs
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
           repository: dfuchs/alma-8-ansible
+
+      - name: Update Docker Hub description (debian-12)
+        if: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.image == 'all' || github.event.inputs.image == 'debian-12') || (github.event_name == 'push' && needs.detect-changes.outputs.readme == 'true') }}
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: dfuchs
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+          repository: dfuchs/debian-12-ansible
 
       - name: Update Docker Hub description (debian-11)
         if: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.image == 'all' || github.event.inputs.image == 'debian-11') || (github.event_name == 'push' && needs.detect-changes.outputs.readme == 'true') }}
