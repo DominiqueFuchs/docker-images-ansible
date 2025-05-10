@@ -58,7 +58,7 @@ jobs:
 
       - name: Build and push (alma-9)
         uses: docker/build-push-action@v6
-        if: ${{ (steps.changes.outputs.alma-9 == 'true') || (github.event_name == 'schedule') || (github.event_name == 'workflow_dispatch') }}
+        if: ${{ (steps.changes.outputs.alma-9 == 'true') || (github.event_name == 'workflow_dispatch') }}
         with:
           context: .
           file: alma_9.Dockerfile
@@ -67,7 +67,7 @@ jobs:
 
       - name: Build and push (alma-8)
         uses: docker/build-push-action@v6
-        if: ${{ (steps.changes.outputs.alma-8 == 'true') || (github.event_name == 'schedule') || (github.event_name == 'workflow_dispatch') }}
+        if: ${{ (steps.changes.outputs.alma-8 == 'true') || (github.event_name == 'workflow_dispatch') }}
         with:
           context: .
           file: alma_8.Dockerfile
@@ -76,7 +76,7 @@ jobs:
 
       - name: Build and push (debian-11)
         uses: docker/build-push-action@v6
-        if: ${{ (steps.changes.outputs.debian-11 == 'true') || (github.event_name == 'schedule') || (github.event_name == 'workflow_dispatch') }}
+        if: ${{ (steps.changes.outputs.debian-11 == 'true') || (github.event_name == 'workflow_dispatch') }}
         with:
           context: .
           file: debian_11.Dockerfile
@@ -85,7 +85,7 @@ jobs:
 
       - name: Build and push (ubuntu-22.04)
         uses: docker/build-push-action@v6
-        if: ${{ (steps.changes.outputs.ubuntu-2204 == 'true') || (github.event_name == 'schedule') || (github.event_name == 'workflow_dispatch') }}
+        if: ${{ (steps.changes.outputs.ubuntu-2204 == 'true') || (github.event_name == 'workflow_dispatch') }}
         with:
           context: .
           file: ubuntu_2204.Dockerfile
