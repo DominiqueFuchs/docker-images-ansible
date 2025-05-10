@@ -44,7 +44,11 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: dfuchs/alma-9-ansible
+          images: |
+            ${{ (github.event_name == 'workflow_dispatch' || steps.changes.outputs.alma-9 == 'true') && 'dfuchs/alma-9-ansible' || '' }}
+            ${{ (github.event_name == 'workflow_dispatch' || steps.changes.outputs.alma-8 == 'true') && 'dfuchs/alma-8-ansible' || '' }}
+            ${{ (github.event_name == 'workflow_dispatch' || steps.changes.outputs.debian-11 == 'true') && 'dfuchs/debian-11-ansible' || '' }}
+            ${{ (github.event_name == 'workflow_dispatch' || steps.changes.outputs.ubuntu-2204 == 'true') && 'dfuchs/ubuntu-22.04-ansible' || '' }}
 
       - name: Login to Docker Hub repository
         uses: docker/login-action@v3
