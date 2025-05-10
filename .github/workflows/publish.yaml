@@ -15,10 +15,10 @@ jobs:
     if: ${{ (github.event_name != 'schedule') && (github.event_name != 'workflow_dispatch') }}
     runs-on: ubuntu-latest
     outputs:
-      alma-9: ${{ steps.filter.outputs.alma-9 }}
-      alma-8: ${{ steps.filter.outputs.alma-8 }}
-      debian-11: ${{ steps.filter.outputs.debian-11 }}
-      ubuntu-2204: ${{ steps.filter.outputs.ubuntu-2204 }}
+      alma-9: ${{ steps.changes.outputs.alma-9 }}
+      alma-8: ${{ steps.changes.outputs.alma-8 }}
+      debian-11: ${{ steps.changes.outputs.debian-11 }}
+      ubuntu-2204: ${{ steps.changes.outputs.ubuntu-2204 }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
