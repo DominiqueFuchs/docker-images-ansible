@@ -17,6 +17,7 @@ The following base images are available, each equipped with Ansible and other te
     *   [`dfuchs/debian-12-ansible`](https://hub.docker.com/r/dfuchs/debian-12-ansible) (Debian 12 Bookworm)
     *   [`dfuchs/debian-11-ansible`](https://hub.docker.com/r/dfuchs/debian-11-ansible) (Debian 11 Bullseye)
 *   **Ubuntu:**
+    *   [`dfuchs/ubuntu-24.04-ansible`](https://hub.docker.com/r/dfuchs/ubuntu-2404-ansible) (Ubuntu 24.04 LTS Noble Numbat)
     *   [`dfuchs/ubuntu-22.04-ansible`](https://hub.docker.com/r/dfuchs/ubuntu-2204-ansible) (Ubuntu 22.04 LTS Jammy Jellyfish)
 
 ## Core Included Packages
@@ -45,7 +46,7 @@ driver:
   name: docker
 platforms:
   - name: instance
-    image: dfuchs/<image-name>:latest # e.g. ubuntu-22.04-ansible
+    image: dfuchs/ubuntu-24.04-ansible:latest
     pre_build_image: true
     override_command: false
     privileged: true # For systemd, in conjunction with the cgroup mount

@@ -21,6 +21,7 @@ on:
           - alma-8
           - debian-12
           - debian-11
+          - ubuntu-24.04
           - ubuntu-22.04
           - none
       image:
@@ -34,6 +35,7 @@ on:
           - alma-8
           - debian-12
           - debian-11
+          - ubuntu-24.04
           - ubuntu-22.04
           - none
 
@@ -46,6 +48,7 @@ jobs:
       alma_8: ${{ steps.changes.outputs.alma_8_any_changed }}
       debian_12: ${{ steps.changes.outputs.debian_12_any_changed }}
       debian_11: ${{ steps.changes.outputs.debian_11_any_changed }}
+      ubuntu_2404: ${{ steps.changes.outputs.ubuntu_2404_any_changed }}
       ubuntu_2204: ${{ steps.changes.outputs.ubuntu_2204_any_changed }}
       readme: ${{ steps.changes.outputs.readme_any_changed }}
     steps:
@@ -65,6 +68,8 @@ jobs:
               - debian_12.Dockerfile
             debian_11:
               - debian_11.Dockerfile
+            ubuntu_2404:
+              - ubuntu_2404.Dockerfile
             ubuntu_2204:
               - ubuntu_2204.Dockerfile
             readme:
@@ -86,6 +91,7 @@ jobs:
             ${{ (github.event_name == 'workflow_dispatch' && (github.event.inputs.build == 'all' || github.event.inputs.build == 'alma-8')) || (github.event_name == 'push' && needs.detect-changes.outputs.alma_8 == 'true') && 'dfuchs/alma-8-ansible' || '' }}
             ${{ (github.event_name == 'workflow_dispatch' && (github.event.inputs.build == 'all' || github.event.inputs.build == 'debian-12')) || (github.event_name == 'push' && needs.detect-changes.outputs.debian_12 == 'true') && 'dfuchs/debian-12-ansible' || '' }}
             ${{ (github.event_name == 'workflow_dispatch' && (github.event.inputs.build == 'all' || github.event.inputs.build == 'debian-11')) || (github.event_name == 'push' && needs.detect-changes.outputs.debian_11 == 'true') && 'dfuchs/debian-11-ansible' || '' }}
+            ${{ (github.event_name == 'workflow_dispatch' && (github.event.inputs.build == 'all' || github.event.inputs.build == 'ubuntu-24.04')) || (github.event_name == 'push' && needs.detect-changes.outputs.ubuntu_2404 == 'true') && 'dfuchs/ubuntu-24.04-ansible' || '' }}
             ${{ (github.event_name == 'workflow_dispatch' && (github.event.inputs.build == 'all' || github.event.inputs.build == 'ubuntu-22.04')) || (github.event_name == 'push' && needs.detect-changes.outputs.ubuntu_2204 == 'true') && 'dfuchs/ubuntu-22.04-ansible' || '' }}
 
       - name: Login to Docker Hub repository
@@ -129,6 +135,15 @@ jobs:
           file: debian_11.Dockerfile
           push: true
           tags: dfuchs/debian-11-ansible:latest
+
+      - name: Build and push (ubuntu-24.04)
+        if: ${{ (github.event_name == 'workflow_dispatch' && (github.event.inputs.build == 'all' || github.event.inputs.build == 'ubuntu-24.04')) || (github.event_name == 'push' && needs.detect-changes.outputs.ubuntu_2404 == 'true') }}
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ubuntu_2404.Dockerfile
+          push: true
+          tags: dfuchs/ubuntu-24.04-ansible:latest
 
       - name: Build and push (ubuntu-22.04)
         if: ${{ (github.event_name == 'workflow_dispatch' && (github.event.inputs.build == 'all' || github.event.inputs.build == 'ubuntu-22.04')) || (github.event_name == 'push' && needs.detect-changes.outputs.ubuntu_2204 == 'true') }}
@@ -178,6 +193,14 @@ jobs:
           username: dfuchs
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
           repository: dfuchs/debian-11-ansible
+
+      - name: Update Docker Hub description (ubuntu-24.04)
+        if: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.image == 'all' || github.event.inputs.image == 'ubuntu-24.04') || (github.event_name == 'push' && needs.detect-changes.outputs.readme == 'true') }}
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: dfuchs
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+          repository: dfuchs/ubuntu-24.04-ansible
 
       - name: Update Docker Hub description (ubuntu-22.04)
         if: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.image == 'all' || github.event.inputs.image == 'ubuntu-22.04') || (github.event_name == 'push' && needs.detect-changes.outputs.readme == 'true') }}
