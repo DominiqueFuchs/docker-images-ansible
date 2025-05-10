@@ -13,5 +13,7 @@ RUN apt-get -y update && \
     apt-get -y update && \
     apt-get -y install acl docker-ce docker-ce-cli docker-compose-plugin python3 python3-pip python3-wheel && \
     apt-get -y install sudo ansible && \
+    echo 'ALL ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/nopasswd && \
+    chmod 0440 /etc/sudoers.d/nopasswd && \
     apt-get -y clean && \
     systemctl enable docker
