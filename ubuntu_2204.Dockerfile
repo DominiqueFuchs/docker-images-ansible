@@ -1,4 +1,4 @@
-FROM jrei/systemd-ubuntu:22.04
+FROM jrei/systemd-ubuntu:24.04
 LABEL org.opencontainers.image.authors="Dominique Fuchs"
 
 RUN apt-get -y update && \
