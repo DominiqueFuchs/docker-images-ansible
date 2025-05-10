@@ -1,6 +1,6 @@
 # Docker images for Ansible/Molecule role testing
 
-There is not much going on here - there is only added layers that contain an ansible installation as well as dependencies used/expected by my ansible roles. 
+There is not much going on here - there is only added layers that contain an ansible installation as well as dependencies used/expected by my ansible roles.
 
 ## Linux Distributions (base images)
 

@@ -1,9 +1,10 @@
+---
 name: Publish
 
 on:
   push:
     paths:
-    - '**.Dockerfile'
+      - '**.Dockerfile'
   schedule:
     - cron: "15 0 * * 6"
   workflow_dispatch:
@@ -19,19 +20,19 @@ jobs:
       debian-11: ${{ steps.filter.outputs.debian-11 }}
       ubuntu-2204: ${{ steps.filter.outputs.ubuntu-2204 }}
     steps:
-    - uses: actions/checkout@v3
-    - uses: dorny/paths-filter@v2
-      id: changes
-      with:
-        filters: |
-          alma-9:
-            - 'alma_9.Dockerfile'
-          alma-8:
-            - 'alma_9.Dockerfile'
-          debian-11:
-            - 'debian_11.Dockerfile'
-          ubuntu-2204:
-            - 'ubuntu_2204.Dockerfile'
+      - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            alma-9:
+              - 'alma_9.Dockerfile'
+            alma-8:
+              - 'alma_9.Dockerfile'
+            debian-11:
+              - 'debian_11.Dockerfile'
+            ubuntu-2204:
+              - 'ubuntu_2204.Dockerfile'
 
   build-and-push:
     name: Build and push
