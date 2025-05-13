@@ -1,4 +1,5 @@
-[![Publish](https://github.com/DominiqueFuchs/docker-images-ansible/actions/workflows/publish.yaml/badge.svg?branch=main)](https://github.com/DominiqueFuchs/docker-images-ansible/actions/workflows/publish.yaml)
+ARCHIVED – Superseded by https://github.com/DominiqueFuchs/DiD
+---
 
 # Docker Images for Ansible Role and Molecule Testing
 
